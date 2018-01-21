@@ -1,25 +1,25 @@
 "use strict";
 import { Discount } from "./discount";
-import { DISCOUNTS, STORE } from "./store";
+import { DISCOUNTS, STORE, USER_LEVEL } from "./store";
 
+const getDiscounts = (storeName, userLevel) => DISCOUNTS[storeName]
+  .filter(discount => discount.userLevel === undefined || discount.userLevel === userLevel)
+  .sort((prev, next) => prev.price - next.price);
 
-const getDiscounts = storeName => DISCOUNTS[storeName].sort((prev, next) => prev.price - next.price);
+const getDiscount = (storeName, userLevel) => getDiscounts(storeName, userLevel)
+  .reduce((discount, discountMeta) => discount.after(new Discount(discountMeta)), new Discount(0, 0));
 
-const discount = (totalPrice, storeName) => {
-  const discountChain = getDiscounts(storeName)
-    .reduce((discount, { price, discountPrice }) => discount.after(new Discount(price, discountPrice)), new Discount(0, 0));
-  return discountChain.calculate(totalPrice);
+const calculate = (user, storeName, price) => {
+  const discount = getDiscount(storeName, user.level);
+  const actualPrice = discount.calculate(price);
+  console.log(`${storeName}: Total $${price}, actually pay $${actualPrice} for ${user.name}`);
 };
 
+const james = { name: 'James', level: USER_LEVEL.SENIOR };
+const kayla = { name: 'Kayla', level: USER_LEVEL.JUNIOR };
 
-const calculate = (storeName, price) => {
-  console.log(`${storeName}: Total $${price}, actually pay $${discount(price, storeName)}`);
-};
+calculate(james, STORE.BOOK_A, 1000);
+calculate(kayla, STORE.BOOK_A, 1000);
 
-calculate(STORE.BOOK_A, 1000);
-calculate(STORE.BOOK_B, 900);
-calculate(STORE.BOOK_C, 800);
-calculate(STORE.BOOK_D, 700);
-calculate(STORE.BOOK_B, 600);
-calculate(STORE.BOOK_A, 500);
-calculate(STORE.BOOK_C, 400);
+calculate(james, STORE.BOOK_C, 1000);
+calculate(kayla, STORE.BOOK_C, 1000);

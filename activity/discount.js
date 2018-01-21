@@ -1,7 +1,8 @@
 "use strict";
 
 export class Discount {
-  constructor(price, discountPrice) {
+
+  constructor({ price, discountPrice }) {
     this.price = price;
     this.discountPrice = discountPrice;
   }
