@@ -7,12 +7,11 @@ const getDiscounts = (storeName, userLevel) => DISCOUNTS[storeName]
   .sort((prev, next) => prev.price - next.price);
 
 const getDiscount = (storeName, userLevel) => getDiscounts(storeName, userLevel)
-  .reduce((discount, discountMeta) => discount.after(new Discount(discountMeta)), new Discount(0, 0));
+  .reduce((discount, discountData) => discount.setPrevious(new Discount(discountData)), new Discount(0, 0));
 
 const calculate = (user, storeName, price) => {
-  const discount = getDiscount(storeName, user.level);
-  const actualPrice = discount.calculate(price);
-  console.log(`${storeName}: Total $${price}, actually pay $${actualPrice} for ${user.name}`);
+  getDiscount(storeName, user.level).calculate(price)
+    .then(actualPrice => console.log(`${storeName}: Total $${price}, actually pay $${actualPrice} for ${user.name}`));
 };
 
 const james = { name: 'James', level: USER_LEVEL.SENIOR };
