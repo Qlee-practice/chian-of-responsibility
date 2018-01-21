@@ -6,9 +6,9 @@ import { DISCOUNTS, STORE } from "./store";
 const getDiscounts = storeName => DISCOUNTS[storeName].sort((prev, next) => prev.price - next.price);
 
 const discount = (totalPrice, storeName) => {
-  const discountChain = getDiscounts(storeName)
-    .reduce((discount, { price, discountPrice }) => discount.after(new Discount(price, discountPrice)), new Discount(0, 0));
-  return discountChain.calculate(totalPrice);
+  return getDiscounts(storeName)
+    .reduce((discount, { price, discountPrice }) => discount.setPrevious(new Discount(price, discountPrice)), new Discount(0, 0))
+    .calculate(totalPrice);
 };
 
 
