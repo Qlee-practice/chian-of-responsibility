@@ -1,23 +1,25 @@
 "use strict";
-import {Discount} from "./discount";
+import { Discount } from "./discount";
+import { DISCOUNTS, STORE } from "./store";
 
-const discount = totalPrice => {
-  const discountChain = (new Discount(1000, 150))
-    .after(new Discount(800, 100))
-    .after(new Discount(500, 50))
-    .after(new Discount(0, 0));
+
+const getDiscounts = storeName => DISCOUNTS[storeName].sort((prev, next) => prev.price - next.price);
+
+const discount = (totalPrice, storeName) => {
+  const discountChain = getDiscounts(storeName)
+    .reduce((discount, { price, discountPrice }) => discount.after(new Discount(price, discountPrice)), new Discount(0, 0));
   return discountChain.calculate(totalPrice);
 };
 
 
-const calculate = price => {
-  console.log(`Total $${price}, actually pay $${discount(price)}`);
+const calculate = (storeName, price) => {
+  console.log(`${storeName}: Total $${price}, actually pay $${discount(price, storeName)}`);
 };
 
-calculate(1000);
-calculate(900);
-calculate(800);
-calculate(700);
-calculate(600);
-calculate(500);
-calculate(400);
+calculate(STORE.BOOK_A, 1000);
+calculate(STORE.BOOK_B, 900);
+calculate(STORE.BOOK_C, 800);
+calculate(STORE.BOOK_D, 700);
+calculate(STORE.BOOK_B, 600);
+calculate(STORE.BOOK_A, 500);
+calculate(STORE.BOOK_C, 400);
