@@ -1,13 +1,19 @@
 "use strict";
-import {Discount} from "./discount";
+import { Discount } from "./discount";
+
+const discountData = [{
+  price: 500, discountPrice: 50
+}, {
+  price: 800, discountPrice: 100
+}, {
+  price: 1000, discountPrice: 150
+}];
 
 const discount = totalPrice => {
-  return (new Discount(0, 0))
-    .setPrevious(new Discount(500, 50))
-    .setPrevious(new Discount(800, 100))
-    .setPrevious(new Discount(1000, 150)).calculate(totalPrice);
+  return discountData
+    .reduce((discountChain, { price, discountPrice }) => discountChain.setPrevious(new Discount(price, discountPrice)), new Discount(0, 0))
+    .calculate(totalPrice);
 };
-
 
 const calculate = price => {
   console.log(`Total $${price}, actually pay $${discount(price)}`);
