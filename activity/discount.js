@@ -6,13 +6,14 @@ export class Discount {
     this.discountPrice = discountPrice;
   }
 
-  after(discount) {
+  setPrevious(discount) {
     discount.setNextDiscount(this);
     return discount;
   }
 
   setNextDiscount(discount) {
     this.nextDiscount = discount;
+    return discount;
   }
 
   calculate(price) {

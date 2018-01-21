@@ -2,11 +2,10 @@
 import {Discount} from "./discount";
 
 const discount = totalPrice => {
-  const discountChain = (new Discount(1000, 150))
-    .after(new Discount(800, 100))
-    .after(new Discount(500, 50))
-    .after(new Discount(0, 0));
-  return discountChain.calculate(totalPrice);
+  return (new Discount(0, 0))
+    .setPrevious(new Discount(500, 50))
+    .setPrevious(new Discount(800, 100))
+    .setPrevious(new Discount(1000, 150)).calculate(totalPrice);
 };
 
 
