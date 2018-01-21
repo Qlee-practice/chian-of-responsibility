@@ -1,13 +1,12 @@
+"use strict";
+import {Discount} from "./discount";
+
 const discount = totalPrice => {
-  if (totalPrice >= 1000) {
-    return totalPrice - 150;
-  } else if (totalPrice >= 800) {
-    return totalPrice - 100;
-  } else if (totalPrice >= 500) {
-    return totalPrice - 50;
-  } else {
-    return totalPrice;
-  }
+  const discountChain = (new Discount(1000, 150))
+    .after(new Discount(800, 100))
+    .after(new Discount(500, 50))
+    .after(new Discount(0, 0));
+  return discountChain.calculate(totalPrice);
 };
 
 
